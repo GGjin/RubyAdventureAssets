@@ -9,7 +9,7 @@ public class HealthCollectable : MonoBehaviour
     //添加触发器碰撞事件，每次碰撞触发器时，执行其中的代码
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log($"和当前物体发生碰撞的对象是:{other}");
+        // Debug.Log($"和当前物体发生碰撞的对象是:{other}");
         //获取Ruby游戏对象的脚本对象
         RubyController rubyController = other.GetComponent<RubyController>();
         if (rubyController != null)

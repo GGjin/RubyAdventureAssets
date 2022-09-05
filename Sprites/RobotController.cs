@@ -18,9 +18,13 @@ public class RobotController : MonoBehaviour
 
     bool isBackX = false;
 
+    private Animator animator;
 
     Rigidbody2D robot2D;
     Vector2 position;
+    bool isBroked = true;
+    //开放接口，用来获取烟雾特效
+    public ParticleSystem smokeEffect;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +32,7 @@ public class RobotController : MonoBehaviour
         robot2D = GetComponent<Rigidbody2D>();
         position = robot2D.position;
         initX = position.x;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -38,6 +43,10 @@ public class RobotController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!isBroked)
+        {
+            return;
+        }
         // Debug.Log(position.x);
 
         if (maxX != 0f)
@@ -64,7 +73,7 @@ public class RobotController : MonoBehaviour
                     positionX = 0;
                 }
             }
-
+            animator.SetFloat("MoveX", positionX);
         }
         if (maxY != 0f)
         {
@@ -83,6 +92,19 @@ public class RobotController : MonoBehaviour
         {
             rubyController.ChangeHealth(-1);
         }
+    }
+
+    public void Fix()
+    {
+        //更改状态为已修复
+        isBroked = false;
+        //让机器人不会再碰撞
+        //这里采用的是刚体对象取消物理引擎效果
+        robot2D.simulated = false;
+        animator.SetTrigger("Fix");
+        // Destroy(smokeEffect);
+        //特效停止产生，但是已产生的会走完声明周期
+        smokeEffect.Stop();
     }
 
 }
