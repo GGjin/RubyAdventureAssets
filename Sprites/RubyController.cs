@@ -5,6 +5,13 @@ using UnityEngine;
 public class RubyController : MonoBehaviour
 {
 
+    AudioSource audioSource;
+
+    public AudioClip throwCogClip;
+    public float throwCogClipVol = 1f;
+    public AudioClip playHitClip;
+    public float playHitClipVol = 1f;
+
 
     public GameObject projectilePrefab;
 
@@ -50,6 +57,8 @@ public class RubyController : MonoBehaviour
         rigidbody2D = GetComponent<Rigidbody2D>();
         currentHealth = maxHealth;
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
+
     }
 
     // Update is called once per frame
@@ -91,12 +100,12 @@ public class RubyController : MonoBehaviour
         animator.SetFloat("Speed", move.magnitude);
 
         //添加子弹发射逻辑
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
         {
             Launch();
         }
 
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             //创建一个射线投射碰撞对象，来接收射线投射碰撞信息
             //射线投射使用的是Physics2D.Raycast方法：
@@ -105,6 +114,11 @@ public class RubyController : MonoBehaviour
             if (hit.collider != null)
             {
                 Debug.Log($"射线投射碰撞到的对象是：{hit.collider.gameObject}");
+                NonPlayerCharacter npc = hit.collider.GetComponent<NonPlayerCharacter>();
+                if (npc != null)
+                {
+                    npc.DisplayDialog();
+                }
             }
         }
     }
@@ -127,6 +141,7 @@ public class RubyController : MonoBehaviour
             }
             isInvincible = true;
             invincibleTimer = timeInvincible;
+            PlaySound(playHitClip, playHitClipVol);
         }
         //限制方法，限制当前生命值的复制范围：0-最大生命值
         currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
@@ -147,8 +162,15 @@ public class RubyController : MonoBehaviour
         //第一个参数时移动的方向，取得时玩家面朝的方向
         //第二个参数是力的大小
         projectile.Launch(lookDirection, 300);
-
+        // PlaySound(throwCogClip, throwCogClipVol);
         animator.SetTrigger("Launch");
     }
+
+    //新增方法，一经调用，就播放对应的音效
+    public void PlaySound(AudioClip audioClip, float soundVol)
+    {
+        audioSource.PlayOneShot(audioClip, soundVol);
+    }
+
 
 }

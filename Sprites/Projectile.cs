@@ -5,7 +5,10 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
 
-    private Rigidbody2D rigidbody2D;
+    public AudioClip fixClip;
+    public float fixClipVol = 1f;
+
+    private Rigidbody2D project2D;
 
     //公开一个特效 来挂接粒子特效
     public ParticleSystem hitEffect;
@@ -19,7 +22,7 @@ public class Projectile : MonoBehaviour
     private void Awake()
     {
 
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        project2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -36,7 +39,7 @@ public class Projectile : MonoBehaviour
     {
         //通过刚体对象掉用物理系统的AddForce方法
         //对游戏对象施加一个力，使其移动
-        rigidbody2D.AddForce(direction * force);
+        project2D.AddForce(direction * force);
     }
 
 
@@ -44,9 +47,12 @@ public class Projectile : MonoBehaviour
     {
         //获取齿轮飞弹碰撞到的机器人对象脚本组件
         RobotController robotController = other.collider.GetComponent<RobotController>();
+        // RubyController rubyController = GetComponent<RubyController>();
+
         if (robotController != null)
         {
             robotController.Fix();
+            // rubyController.PlaySound(fixClip, fixClipVol);
         }
         Debug.Log($"齿轮子弹碰撞到了：{other.gameObject}");
         Destroy(gameObject);

@@ -5,6 +5,8 @@ using UnityEngine;
 public class RobotController : MonoBehaviour
 {
 
+
+    public AudioClip fixClip;
     public float maxX;
 
     public float maxY;
@@ -96,6 +98,8 @@ public class RobotController : MonoBehaviour
 
     public void Fix()
     {
+
+
         //更改状态为已修复
         isBroked = false;
         //让机器人不会再碰撞
